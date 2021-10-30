@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
 
+from mainapp.models import NotesOfUser
+
 # Create your views here.
 def home(request):
     return render(request,'mainapp/home.html')
@@ -51,7 +53,10 @@ def logout(request):
     return redirect('mainapp:home')
 
 def notes(request):
-    return render(request,'mainapp/notes.html')
+    user=request.user
+    notes=NotesOfUser.objects.all()
+
+    return render(request,'mainapp/notes.html',{'notes':notes})
 
 def screen(request):
     return render(request,'mainapp/screen.html')

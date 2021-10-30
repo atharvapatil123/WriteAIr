@@ -544,77 +544,17 @@ li a{
           </tr>
         </thead>
         <tbody>
+          {% for note in notes %}
           <tr>
             <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
+            <td>{{note.name}}</td>
+            <td>{{note.created}}</td>
+            <td>{{note.author}}</td>
+            <td><a href>Download</a></td>
+
           </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr><tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
-          <tr>
-            <th scope="row">1</th>
-            <td>OSCAssignment7.pdf</td>
-            <td>27 October 2021</td>
-            <td>Aryan Khurana</td>
-          </tr>
+          {% endfor %}
+         
         </tbody>
       </table>
    
