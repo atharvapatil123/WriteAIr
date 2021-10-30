@@ -10,6 +10,7 @@ urlpatterns = [
   
     path('notes/', views.notes,name='notes'),
     path('screen/', views.screen,name='screen'),
+    
 
     
 ]

@@ -541,6 +541,7 @@ li a{
             <th scope="col">File Name</th>
             <th scope="col">Created</th>
             <th scope="col">Author</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -550,7 +551,7 @@ li a{
             <td>{{note.name}}</td>
             <td>{{note.created}}</td>
             <td>{{note.author}}</td>
-            <td><a href>Download</a></td>
+            <td><a href="{{note.image1.url}}" download>Download</a></td>
 
           </tr>
           {% endfor %}
