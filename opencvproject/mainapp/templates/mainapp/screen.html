@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- jQuery -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+   
+    <title>WriteAIr</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap");
+
+*{
+    padding: 0;
+    margin: 0;
+    font: Poppins;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: black !important;
+    overflow-x: hidden;
+}
+
+
+
+
+
+.container {
+	margin: 0px auto;
+	width: 100%;
+	height: 500px;
+	
+}
+#videoElement {
+	width: 100%;
+	height: 500px;
+	background-color: #666;
+}
+
+
+
+
+
+
+
+
+
+
+
+.footer{
+    padding: 30px 100px 5px 100px;
+    background-color: #111517;
+}
+
+.footer p{
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color:white;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+    </style>
+  </head>
+  <body>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'mainapp:home' %}">WriteAIr</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'mainapp:screen' %}">Screen</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'mainapp:notes' %}">Notes</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Authentication
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="{% url 'mainapp:login' %}" >Login</a></li>
+                  <li><a class="dropdown-item" href="{% url 'mainapp:register' %}">Register</a></li>
+                  <li><a class="dropdown-item" href="{% url 'mainapp:logout' %}">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav> 
+  
+      <div class="container">
+        <video autoplay="true" id="videoElement">
+        
+        </video>
+    </div>  
+    <div style="text-align:center">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin:10px ;">
+
+      
+        <label class="btn btn-success">
+          <input type="radio" name="options" id="option2" autocomplete="off"> Save
+        </label>
+        <label class="btn btn-danger">
+          <input type="radio" name="options" id="option3" autocomplete="off"> Undo
+        </label>
+      </div>
+    </div>
+    <div class="container" style="background-color:white;">
+
+    </div>  
+   
+     
+  
+  
+  
+      
+      
+          
+     
+				
+  <div class="footer">
+    <p>&#169Team PARA</p>
+  </div>	
+	
+      
+      
+	
+
+</body>
+<script>
+    var video = document.querySelector("#videoElement");
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function (err0r) {
+      console.log("Something went wrong!");
+    });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
