@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous"
+    />
+    <title>Registration</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap");
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        font-family: Poppins, sans-serif;
+        font-size: 1em;
+        color: white;
+      }
+
+      #register {
+        width: 25%;
+        background: #060c21;
+        padding: 1em;
+        margin: 7em;
+        border: 2px solid #cd1882;
+      }
+
+      #register input {
+        border: none;
+        outline: none;
+        padding: 5px 15px;
+        background: linear-gradient(315deg, #e91e63, #5d02ff);
+        color: #fff;
+        font-size: 18px;
+        border-radius: 10px;
+      }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .btn {
+        background-color: #cd1882;
+        margin: 10px;
+        width: 30%;
+      }
+      @media screen and (max-width: 1300px) {
+        #register {
+          width: 30%;
+        }
+      }
+      @media screen and (max-width: 1000px) {
+        #register {
+          width: 40%;
+        }
+      }
+      @media screen and (max-width: 768px) {
+        #register {
+          width: 50%;
+        }
+      }
+      @media screen and (max-width: 600px) {
+        #register {
+          width: 75%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/register" method="post" id="register">
+      {% csrf_token %}
+      <h3 class="text-center">Create Account</h3>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label><br />
+        <input type="text" class="form-control" name="username" id="username" />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label><br />
+        <input type="email" class="form-control" name="email" id="email" />
+      </div>
+      <div class="mb-3">
+        <label for="password1" class="form-label">Password</label><br />
+        <input
+          type="password"
+          class="form-control"
+          name="password1"
+          id="password1"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="password2" class="form-label"> Confirm Password</label
+        ><br />
+        <input
+          type="password"
+          class="form-control"
+          name="password2"
+          id="password2"
+        />
+      </div>
+      <div class="button">
+        <button type="submit" class="btn">Submit</button>
+      </div>
+    </form>
+  </body>
+</html>
