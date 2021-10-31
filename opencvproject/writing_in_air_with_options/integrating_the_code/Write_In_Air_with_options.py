@@ -65,8 +65,20 @@ wiper_thresh = 40000
 # A varaible which tells when to clear canvas, if its True then we clear the canvas
 clear = False
 
+pendown = False
+
 # This threshold is used to filter noise, the contour area must be bigger than this to qualify as an actual contour.
 # noiseth = 500
+
+prev_pred = -1
+pred_start = False
+pred_no = 0
+
+colour_to_write = [255, 0, 0]
+
+qc1 = [255, 0, 0]
+qc2 = [0, 255, 0]
+qc3 = [0, 0, 255]
 
 i=1
 while(1):
@@ -164,7 +176,8 @@ while(1):
         else:
             if switch == 'Pen':
                 # Draw the line on the canvas
-                canvas = cv2.line(canvas, (x1,y1), (x2,y2), [255,0,0], 5)
+                if pendown:
+                    canvas = cv2.line(canvas, (x1,y1), (x2,y2), colour_to_write, 5)
                 # ((x, y), radius) = cv2.minEnclosingCircle(c)
                 
             else:
@@ -243,6 +256,9 @@ while(1):
         left = False
         if not results.multi_hand_landmarks:
             print("No hands visible.")
+            prev_pred = -1
+            pred_no = 0
+            pred_start = False
             k = cv2.waitKey(5) & 0xFF
             if k == 27:
                 break
@@ -254,7 +270,7 @@ while(1):
             if k == ord('s'):
                 x = f"Page{i}.jpg"
                 cv2.imwrite(x, frame)
-                i=i+1
+                print("SAVED SUCCESSFULLY!")
         # canvas = None
     
     # Clear the canvas after 1 second if the clear variable is true
@@ -275,6 +291,9 @@ while(1):
             index += 1
         if(left != True):
             print("Left hand not shown")
+            prev_pred = -1
+            pred_no = 0
+            pred_start = False
             k = cv2.waitKey(5) & 0xFF
             if k == 27:
                 break
@@ -286,7 +305,7 @@ while(1):
             if k == ord('s'):
                 x = f"Page{i}.jpg"
                 cv2.imwrite(x, frame)
-                i=i+1
+                print("SAVED SUCCESSFULLY!")
         # canvas = None
     
     # Clear the canvas after 1 second if the clear variable is true
@@ -314,6 +333,7 @@ while(1):
         X = [row]
         predictions = model.predict(X)
         print(labels[np.argmax(predictions[0])])
+        curr_pred = np.argmax(predictions[0])
 
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
@@ -326,9 +346,129 @@ while(1):
     if k == ord('s'):
         x = f"Page{i}.jpg"
         cv2.imwrite(x, frame)
-        i=i+1
-        # canvas = None
+        print("SAVED SUCCESSFULLY!")
     
+    
+
+    if curr_pred == 0:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                canvas = None
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+
+    if curr_pred == 1:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                switch = "Eraser" if switch == "Pen" else "Pen"
+                last_switch = time.time()
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 2:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                nextp = f"Page{i+1}.jpg"
+                newimg = cv2.imread(nextp)
+                if (type(newimg) is np.ndarray):
+                    canvas = np.array(newimg)
+                else:
+                    canvas = None
+                i += 1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 3:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                pendown = True
+                switch = "Pen"
+                last_switch = time.time()
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 4:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                pendown = False
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 5:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                if i >= 2:
+                    prevp = f"Page{i-1}.jpg"
+                    newimg = cv2.imread(prevp)
+                    if (type(newimg) is np.ndarray):
+                        canvas = np.array(newimg)
+                    else:
+                        canvas = None
+                    i -= 1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 6:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    
+    if curr_pred == 7:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc2
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    
+    if curr_pred == 8:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc3
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    prev_pred = curr_pred
+
     # Clear the canvas after 1 second if the clear variable is true
     if clear == True:
         
@@ -337,6 +477,7 @@ while(1):
         
         # And then set clear to false
         clear = False
+    
 
 cv2.destroyAllWindows()
 cap.release()
