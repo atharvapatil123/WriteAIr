@@ -1,7 +1,7 @@
 # WriteAIr
 
 ## Inspiration
-During this pandemic, several professors have had to use teach virtually without access to a blackboard. Digital pens can be costly and writing on paper is difficult to record and stream. Thus, we have come up with a way for professors (and anyone else who wants to write and share their work) on AIR! Not only will this help professors who have gone virtual over the pandemic, but it also allows people to share their written work easily, no matter where they are!
+During this pandemic, several professors have had to use teach virtually without access to a blackboard. Digital pens can be costly and writing on paper is difficult to record and stream. Thus, we have come up with a way for professors (and anyone else who wants to write and share their work) to write on AIR! Not only will this help professors who have gone virtual over the pandemic, but it also allows people to share their written work easily, no matter where they are!
 
 ## What it does
 WriteAIr is a website which allows users to stream their writing. It uses HSV masking to detect a pen which the user writes with. Plus, users can select a wide range of options through hand gestures! The notes created can then be saved as images and uploaded on the server.
