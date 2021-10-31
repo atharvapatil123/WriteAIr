@@ -1,7 +1,16 @@
 import cv2
 import numpy as np
 import time
+from google.protobuf.json_format import MessageToDict
+import mediapipe as mp
+import keras
 
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
+mp_hands = mp.solutions.hands
+
+labels = ["clear", "eraser", "nextpage", "pendown", "penup", "previouspage", "quickcolour1", "quickcolour2", "quickcolour3"]
+model = keras.models.load_model('OptionRecognition.h5')
 
 # A required callback method that goes into the trackbar function.
 def nothing(x):
@@ -56,8 +65,20 @@ wiper_thresh = 40000
 # A varaible which tells when to clear canvas, if its True then we clear the canvas
 clear = False
 
+pendown = False
+
 # This threshold is used to filter noise, the contour area must be bigger than this to qualify as an actual contour.
 # noiseth = 500
+
+prev_pred = -1
+pred_start = False
+pred_no = 0
+
+colour_to_write = [255, 0, 0]
+
+qc1 = [255, 0, 0]
+qc2 = [0, 255, 0]
+qc3 = [0, 0, 255]
 
 i=1
 while(1):
@@ -67,6 +88,7 @@ while(1):
         break
         
     frame = cv2.flip( frame, 1 )
+    image = frame.copy()
 
     # Initilize the canvas as a black image of same size as the frame.
     if canvas is None:
@@ -154,7 +176,8 @@ while(1):
         else:
             if switch == 'Pen':
                 # Draw the line on the canvas
-                canvas = cv2.line(canvas, (x1,y1), (x2,y2), [255,0,0], 5)
+                if pendown:
+                    canvas = cv2.line(canvas, (x1,y1), (x2,y2), colour_to_write, 5)
                 # ((x, y), radius) = cv2.minEnclosingCircle(c)
                 
             else:
@@ -204,6 +227,113 @@ while(1):
     # cv2.imshow('foreground',foreground)
     # cv2.imshow('background',background)
 
+    with mp_hands.Hands(
+    model_complexity=0,
+    min_detection_confidence=0.4,
+    min_tracking_confidence=0.4) as hands:
+
+    # To improve performance, optionally mark the image as not writeable to
+    # pass by reference.
+
+        image.flags.writeable = False
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = hands.process(image)
+
+    # Draw the hand annotations on the image.
+
+        image.flags.writeable = True
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                mp_drawing.draw_landmarks(
+                image,
+                hand_landmarks,
+                mp_hands.HAND_CONNECTIONS,
+                mp_drawing_styles.get_default_hand_landmarks_style(),
+                mp_drawing_styles.get_default_hand_connections_style())
+
+        index = 0
+        left = False
+        if not results.multi_hand_landmarks:
+            print("No hands visible.")
+            prev_pred = -1
+            pred_no = 0
+            pred_start = False
+            k = cv2.waitKey(5) & 0xFF
+            if k == 27:
+                break
+
+    # When c is pressed clear the canvas
+            if k == ord('c'):
+                canvas = None
+
+            if k == ord('s'):
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                print("SAVED SUCCESSFULLY!")
+        # canvas = None
+    
+    # Clear the canvas after 1 second if the clear variable is true
+            if clear == True:
+        
+                time.sleep(1)
+                canvas = None
+        
+        # And then set clear to false
+                clear = False
+            continue
+
+        for m in results.multi_handedness:
+            handedness_dict = MessageToDict(m)
+            if (handedness_dict["classification"][0]["label"]) == "Left":
+                left = True
+                break
+            index += 1
+        if(left != True):
+            print("Left hand not shown")
+            prev_pred = -1
+            pred_no = 0
+            pred_start = False
+            k = cv2.waitKey(5) & 0xFF
+            if k == 27:
+                break
+
+    # When c is pressed clear the canvas
+            if k == ord('c'):
+                canvas = None
+
+            if k == ord('s'):
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                print("SAVED SUCCESSFULLY!")
+        # canvas = None
+    
+    # Clear the canvas after 1 second if the clear variable is true
+            if clear == True:
+        
+                time.sleep(1)
+                canvas = None
+        
+        # And then set clear to false
+                clear = False
+            continue
+
+    # Only consider left hand (for a right handed person)
+        row = []
+        origin = results.multi_hand_landmarks[index].landmark[0]
+        origin_x = origin.x
+        origin_y = origin.y
+        origin_z = origin.z
+        for landmark in results.multi_hand_landmarks[index].landmark:
+        # Get relative positions
+
+            row.append(origin_x - landmark.x)
+            row.append(origin_y - landmark.y)
+            row.append(origin_z - landmark.z)
+        X = [row]
+        predictions = model.predict(X)
+        print(labels[np.argmax(predictions[0])])
+        curr_pred = np.argmax(predictions[0])
 
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
@@ -216,9 +346,129 @@ while(1):
     if k == ord('s'):
         x = f"Page{i}.jpg"
         cv2.imwrite(x, frame)
-        i=i+1
-        # canvas = None
+        print("SAVED SUCCESSFULLY!")
     
+    
+
+    if curr_pred == 0:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                canvas = None
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+
+    if curr_pred == 1:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                switch = "Eraser" if switch == "Pen" else "Pen"
+                last_switch = time.time()
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 2:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                nextp = f"Page{i+1}.jpg"
+                newimg = cv2.imread(nextp)
+                if (type(newimg) is np.ndarray):
+                    canvas = np.array(newimg)
+                else:
+                    canvas = None
+                i += 1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 3:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                pendown = True
+                switch = "Pen"
+                last_switch = time.time()
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 4:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                pendown = False
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 5:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                x = f"Page{i}.jpg"
+                cv2.imwrite(x, frame)
+                if i >= 2:
+                    prevp = f"Page{i-1}.jpg"
+                    newimg = cv2.imread(prevp)
+                    if (type(newimg) is np.ndarray):
+                        canvas = np.array(newimg)
+                    else:
+                        canvas = None
+                    i -= 1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+
+    if curr_pred == 6:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc1
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    
+    if curr_pred == 7:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc2
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    
+    if curr_pred == 8:
+        if prev_pred == curr_pred:
+            pred_no += 1
+            if pred_no > 5 and pred_start:
+                colour_to_write = qc3
+                pred_start = False
+        else:
+            pred_start = True
+            pred_no = 1
+        
+    prev_pred = curr_pred
+
     # Clear the canvas after 1 second if the clear variable is true
     if clear == True:
         
@@ -227,6 +477,7 @@ while(1):
         
         # And then set clear to false
         clear = False
+    
 
 cv2.destroyAllWindows()
 cap.release()
