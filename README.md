@@ -1,7 +1,7 @@
 # WriteAIr
 
 ## Inspiration
-During this pandemic, several professors have had to use teach virtually without access to a blackboard. Digital pens can be costly and writing on paper is difficult to record and stream. Thus, we have come up with a way for professors (and anyone else who wants to write and share their work) to write on AIR! Not only will this help professors who have gone virtual over the pandemic, but it also allows people to share their written work easily, no matter where they are!
+During this pandemic, several professors have had to teach virtually without access to a blackboard. Digital pens can be costly and writing on paper is difficult to record and stream. Thus, we have come up with a way for professors (and anyone else who wants to write and share their work) to write on AIR! Not only will this help professors who have gone virtual over the pandemic, but it also allows people to share their written work easily, no matter where they are!
 
 ## What it does
 WriteAIr is a website which allows users to stream their writing. It uses HSV masking to detect a pen which the user writes with. Plus, users can select a wide range of options through hand gestures! The notes created can then be saved as images and uploaded on the server.
@@ -10,7 +10,7 @@ WriteAIr is a website which allows users to stream their writing. It uses HSV ma
 1. Django was used to create the website.
 2. HSV masking was used to detect the marker of some specific colour.
 3. A machine learning model was trained by us to detect hand gestures.
-4. The machine learning model was trained on landmarks data of MediaPipe Hands calculated for images in our dataset which was then saved as a CSV file.
+4. The machine learning model was trained on landmarks data of MediaPipe Hands calculated for images in our dataset which was saved as a CSV file.
 
 ## Challenges we ran into
 1. Converting images to PDF.
@@ -25,8 +25,10 @@ WriteAIr is a website which allows users to stream their writing. It uses HSV ma
 4. Hosted the project on a website using Django.
 
 ## What we learned
-1. Most of us were completely new to machine learning, so we learnt a lot about how to create datasets, convert them into a proper .csv file, train the model and save it in a .h5 file.
+1. Most of us were completely new to machine learning, so we learnt a lot about how to create datasets, convert them into a proper .csv file (since that's what we trained it on), train the model and save it in a .h5 file.
 2. Building a full-fledged website using Django.
+3. We also learnt how to use the MediaPipe API.
+4. Several Computer Vision concepts like OpenCV.
 
 ## What's next for WriteAIr
 1. Adding the project as a Google Meet extension or an alternative to Google Meet using sockets.
