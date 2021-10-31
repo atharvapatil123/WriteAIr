@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
+from .models import NotesOfUser
 
 from mainapp.models import NotesOfUser
 
@@ -34,6 +35,7 @@ def register(request):
             messages.info(request,'Password is not matching..')
             return redirect('mainapp:register')
     return render(request,"mainapp/register.html")
+    
 def login(request):
     if request.method=="POST":
         username=request.POST.get('username')
@@ -60,3 +62,18 @@ def notes(request):
 
 def screen(request):
     return render(request,'mainapp/screen.html')
+
+def upload(request):
+    return render(request,'mainapp/upload.html')
+
+def uploadNotes(request):
+    if request.method == 'GET':
+        return render(request,'mainapp/notes.html')
+    elif request.method == 'POST' and request.FILES["myFile"]:
+        myfile = request.FILES.get('myFile')
+        filename = request.POST.get('name')
+        user = request.user
+        notes = NotesOfUser(name=filename,image1=myfile,author=user)
+        notes.save()
+
+    return redirect('mainapp:notes')
