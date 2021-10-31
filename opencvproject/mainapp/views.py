@@ -47,18 +47,17 @@ def login(request):
             return redirect('mainapp:login')
     return render(request,'mainapp/login.html')
 
-def postSubmit(request):
-    obj=NotesOfUser.objects.get(author=request.user)
+# def postSubmit(request):
+#     obj=NotesOfUser.objects.get(author=request.user)
     
-    form=UploadForm(request.POST or None,request.FILES or None,instance=obj)
-    if request.method=='POST':
-        if form.is_valid():
-            form.save()
+#     form=UploadForm(request.POST or None,request.FILES or None,instance=obj)
+#     if request.method=='POST':
+#         if form.is_valid():
+#             form.save()
     
-    return render(request,'mainapp/notes.html',{'form':form})
+#     return render(request,'mainapp/notes.html',{'form':form})
 
 
-    
 def logout(request):
     auth.logout(request)
     return redirect('mainapp:home')
