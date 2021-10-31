@@ -66,16 +66,13 @@ def logout(request):
 def notes(request):
 
     user=request.user
-    notes=NotesOfUser.objects.all()
-    obj=NotesOfUser.objects.get(author=request.user)
+  
+    obj=NotesOfUser.objects.filter(author=request.user)
     
-    form=UploadForm(request.POST or None,request.FILES or None,instance=obj)
-    if request.method=='POST':
-        if form.is_valid():
-            form.save()
+    
 
 
-    return render(request,'mainapp/notes.html',{'notes':notes})
+    return render(request,'mainapp/notes.html',{'notes':obj})
 
 def screen(request):
     return render(request,'mainapp/screen.html')
