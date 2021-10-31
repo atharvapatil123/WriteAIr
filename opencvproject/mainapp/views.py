@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User,auth
 from .models import NotesOfUser
 
-from mainapp.models import NotesOfUser
 
 # Create your views here.
 def home(request):
@@ -55,8 +54,8 @@ def logout(request):
     return redirect('mainapp:home')
 
 def notes(request):
-    user=request.user
-    notes=NotesOfUser.objects.all()
+    user = request.user
+    notes=NotesOfUser.objects.filter(author=user)
 
     return render(request,'mainapp/notes.html',{'notes':notes})
 

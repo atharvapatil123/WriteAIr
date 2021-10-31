@@ -96,8 +96,8 @@
         {% csrf_token %}
         <h2>UPLOAD YOUR FILES HERE</h2><br>
         <label for="name">Name of the image</label>
-        <input type="text" name="name" id="name"><br>
-        <input type="file" name="myFile" id="myFile">
+        <input type="text" name="name" id="name" required><br>
+        <input type="file" name="myFile" id="myFile" required>
         <button class="btn btn-primary" type="submit">UPLOAD</button>
     </form>
     <script
