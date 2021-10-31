@@ -79,16 +79,16 @@ body{
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-              <li class="nav-item">
+              <li class="nav-item" id="home">
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" id="screen">
                 <a class="nav-link" href="{% url 'mainapp:screen' %}">Screen</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" id="notes">
                 <a class="nav-link" href="{% url 'mainapp:notes' %}">Notes</a>
               </li>
-              <li class="nav-item dropdown">
+              <li class="nav-item dropdown" id="auth">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Authentication
                 </a>
@@ -156,3 +156,36 @@ if (navigator.mediaDevices.getUserMedia) {
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script>
+  
+  home = document.getElementById("home");
+  screen = document.getElementById("screen");
+  notes = document.getElementById("notes");
+  auth = document.getElementById("auth");
+  if (window.location.href === home.href) {
+    // console.log(home.style.color);
+    home.classList.add("active");
+    // home.style.color = "black";
+    screen.classList.remove("active");
+    notes.classList.remove("active");
+    auth.classList.remove("active");
+  } else if (window.location.href === screen.href) {
+    screen.classList.add("active");
+    home.classList.remove("active");
+    auth.classList.remove("active");
+    notes.classList.remove("active");
+    // home.style.color = "red";
+  } else if (window.location.href === notes.href) {
+    notes.classList.add("active");
+    home.classList.remove("active");
+    auth.classList.remove("active");
+    screen.classList.remove("active");
+    // home.style.color = "red";
+  } else if (window.location.href === auth.href) {
+    auth.classList.add("active");
+    home.classList.remove("active");
+    screen.classList.remove("active");
+    notes.classList.remove("active");
+    // home.style.color = "red";
+  }
+</script>
