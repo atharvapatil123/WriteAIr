@@ -19,8 +19,8 @@ cap.set(3,1280)
 cap.set(4,720)
 
 # Load these 2 images and resize them to the same size.
-pen_img = cv2.resize(cv2.imread('pen.png',1), (100, 100))
-eraser_img = cv2.resize(cv2.imread('eraser.jpg',1), (100, 100))
+pen_img = cv2.resize(cv2.imread('pen.png',1), (75, 75))
+eraser_img = cv2.resize(cv2.imread('eraser.jpg',1), (75, 75))
 
 # Making window size adjustable
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
@@ -41,8 +41,7 @@ background_threshold = 600
 switch = 'Pen'
 
 # With this variable we will monitor the time between previous switch.
-last_switch1 = time.time()
-last_switch2 = time.time()
+last_switch = time.time()
 
 # Initilize x1,y1 points
 x1,y1=0,0
@@ -73,35 +72,24 @@ while(1):
         # canvas = np.zeros_like(frame,(471,636,3)) + 255   
 
     # Take the top left of the frame and apply the background subtractor there    
-    top_left1 = frame[0: 100, 0: 100]
-    fgmask1 = backgroundobject.apply(top_left1)
-
-    top_left2 = frame[100: 200, 100: 200]
-    fgmask2 = backgroundobject.apply(top_left2)
-
+    top_left = frame[0: 75, 0: 75]
+    fgmask = backgroundobject.apply(top_left)
     # print(fgmask)
     # Note the number of pixels that are white, this is the level of disruption.
-    switch_thresh1 = np.sum(fgmask1==255)
-    switch_thresh2 = np.sum(fgmask2==255)
+    switch_thresh = np.sum(fgmask==255)
 
     # If the disruption is greater than background threshold and there has been some time after the previous switch then you 
     # can change the object type.
-    if switch_thresh1 > background_threshold  and (time.time() - last_switch1) > 1:
+    if switch_thresh > background_threshold  and (time.time() - last_switch) > 1:
         
         # Save the time of the switch. 
-        last_switch1 = time.time()
-        switch = 'Pen'
+        last_switch = time.time()
+        
+        if switch == 'Pen':
+            switch = 'Eraser'
+        else:
+            switch = 'Pen'
 
-    elif switch_thresh2 > background_threshold  and (time.time() - last_switch2) > 1:
-        
-        # Save the time of the switch. 
-        last_switch2 = time.time()
-        switch = 'Eraser'
-        
-        # if switch == 'Pen':
-        #     switch = 'Eraser'
-        # else:
-    
 
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -188,7 +176,7 @@ while(1):
     cv2.imshow('image2',frame)
 
     frame = cv2.add(frame,canvas)
-    print(frame)
+
     # Optionally stack both frames and show it.
     # stacked = np.hstack((canvas,frame))
     # cv2.imshow('Trackbars',cv2.resize(stacked,None,fx=0.6,fy=0.6))
@@ -200,14 +188,12 @@ while(1):
     background = cv2.bitwise_and(frame, frame, mask = cv2.bitwise_not(mask))
     frame = cv2.add(foreground,background)
 
-    frame[0: 100, 0: 100] = pen_img
-    frame[100: 200, 100: 200] = eraser_img
 
-    # if switch != 'Pen':
-    #     cv2.circle(frame, (x1, y1), 20, (255,255,255), -1)
-    #     frame[0: 100, 0: 100] = eraser_img
-    # else:
-    #     frame[0: 100, 0: 100] = pen_img
+    if switch != 'Pen':
+        cv2.circle(frame, (x1, y1), 20, (255,255,255), -1)
+        frame[0: 75, 0: 75] = eraser_img
+    else:
+        frame[0: 75, 0: 75] = pen_img
 
     # Merge the canvas and the frame.
     cv2.imshow('image',frame)
