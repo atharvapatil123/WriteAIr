@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
-
+from rest_framework.response import Response
+from mainapp.camera import VideoCamera
+from django.http.response import StreamingHttpResponse
 from mainapp.models import NotesOfUser
 
 # Create your views here.
@@ -60,3 +62,13 @@ def notes(request):
 
 def screen(request):
     return render(request,'mainapp/screen.html')
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame+ b'\r\n\r\n')
+
+# @api.view('/video_feed')
+def video_feed(request):
+    return StreamingHttpResponse(gen(VideoCamera()),
+                   content_type='multipart/x-mixed-replace; boundary=frame')

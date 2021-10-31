@@ -10,6 +10,9 @@ urlpatterns = [
   
     path('notes/', views.notes,name='notes'),
     path('screen/', views.screen,name='screen'),
+    path('gen', views.gen,name='gen'),
+    path('video_feed', views.video_feed,name='video_feed'),
+    path('screen/', views.screen,name='screen'),
     
 
     
