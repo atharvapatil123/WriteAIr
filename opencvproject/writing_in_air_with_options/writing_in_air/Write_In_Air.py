@@ -8,7 +8,8 @@ def nothing(x):
     pass
 
 # This variable determines if we want to load color range from memory or use the ones defined here. 
-load_from_disk = True
+# load_from_disk = True
+load_from_disk = False
 
 # If true then load color range from memory
 if load_from_disk:
@@ -58,6 +59,7 @@ clear = False
 # This threshold is used to filter noise, the contour area must be bigger than this to qualify as an actual contour.
 # noiseth = 500
 
+i=1
 while(1):
     
     ret, frame = cap.read()
@@ -102,8 +104,8 @@ while(1):
         
     # Otherwise define your own custom values for upper and lower range.
     else:             
-       lower_range  = np.array([26,80,147])
-       upper_range = np.array([81,255,255])
+       lower_range  = np.array([92,99,60])
+       upper_range = np.array([165,255,255])
     
     mask = cv2.inRange(hsv, lower_range, upper_range)
     
@@ -210,6 +212,12 @@ while(1):
     # When c is pressed clear the canvas
     if k == ord('c'):
         canvas = None
+
+    if k == ord('s'):
+        x = f"Page{i}.jpg"
+        cv2.imwrite(x, frame)
+        i=i+1
+        # canvas = None
     
     # Clear the canvas after 1 second if the clear variable is true
     if clear == True:
