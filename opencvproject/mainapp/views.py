@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
+from .forms import UploadForm
+
 
 from mainapp.models import NotesOfUser
 
@@ -47,7 +49,18 @@ def login(request):
             return redirect('mainapp:login')
     return render(request,'mainapp/login.html')
 
+def postSubmit(request):
+    obj=NotesOfUser.objects.get(author=request.user)
+    
+    form=UploadForm(request.POST or None,request.FILES or None,instance=obj)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+    
+    return render(request,'mainapp/notes.html',{'form':form})
 
+
+    
 def logout(request):
     auth.logout(request)
     return redirect('mainapp:home')
@@ -55,6 +68,12 @@ def logout(request):
 def notes(request):
     user=request.user
     notes=NotesOfUser.objects.all()
+    obj=NotesOfUser.objects.get(author=request.user)
+    
+    form=UploadForm(request.POST or None,request.FILES or None,instance=obj)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
 
     return render(request,'mainapp/notes.html',{'notes':notes})
 

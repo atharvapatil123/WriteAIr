@@ -533,7 +533,19 @@ li a{
           </div>
         </div>
       </nav> 
-   
+      <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          {{form}}
+          <button type="submit" class="btn btn-info">Submit</button>
+        </div>
+      </form>
+
+        
+       
+      
+  
+      
       <table class="table" style="color:white">
         <thead>
           <tr>
