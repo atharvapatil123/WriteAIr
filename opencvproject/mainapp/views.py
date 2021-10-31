@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
-from .models import 
+from .models import NotesOfUser
 
 # Create your views here.
 def home(request):
@@ -64,7 +64,7 @@ def logout(request):
     return redirect('mainapp:home')
 
 def notes(request):
-<<<<<<< HEAD
+
     user=request.user
     notes=NotesOfUser.objects.all()
     obj=NotesOfUser.objects.get(author=request.user)
@@ -73,10 +73,7 @@ def notes(request):
     if request.method=='POST':
         if form.is_valid():
             form.save()
-=======
-    user = request.user
-    notes=NotesOfUser.objects.filter(author=user)
->>>>>>> 287a49ed071fa5e96be31678ef251d1248333b44
+
 
     return render(request,'mainapp/notes.html',{'notes':notes})
 
